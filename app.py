@@ -82,5 +82,9 @@ def send_whatsapp_message(to, text):
 def home():
     return 'Bharti WhatsApp Bot is Running Perfectly!'
 
+# === RENDER PORT BINDING FIX ===
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Render dynamic PORT variable pr chalta hai, local me 10000 ya 5000 use karega
+    port = int(os.environ.get("PORT", 10000))
+    # Production/Render par host="0.0.0.0" hona zaruri hai
+    app.run(host="0.0.0.0", port=port, debug=False)
