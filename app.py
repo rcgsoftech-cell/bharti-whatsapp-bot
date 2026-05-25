@@ -5,16 +5,11 @@ import json
 
 app = Flask(__name__)
 
-# ✅ FIX: Default values को सही तरीके से सेट किया गया है
+# Render ke Environment Variables se values load hongi
 VERIFY_TOKEN = os.environ.get('WHATSAPP_VERIFY_TOKEN', 'bharti_bot_123')
-
-# अगर Render पर Env Variable नहीं सेट है, तो यह डिफ़ॉल्ट टोकन यूज़ करेगा
-ACCESS_TOKEN = os.environ.get('WHATSAPP_ACCESS_TOKEN', 'EAALUXJHmDzABRuHHBgYyeUORZCFbszihUHQOuRl3nKBhKaPEwKHEqBbWb9xVMY2SUZAZBcZA3SZAJniNLGvR5ez4t7FN9yXpqV392ZA9hZCZBru12sGZBmAOD4BuM4bxWC6U5smL6wvsfxLxI3Ud4mxU2aWfTLHnuTTNSedk3JWFHmPZAqNgwc6tIjLeQPQwvhZCgZDZD')
-
-# ✅ FIX: '1158332860694177' को डिफ़ॉल्ट वैल्यू (Second Argument) बनाया गया है
+ACCESS_TOKEN = os.environ.get('WHATSAPP_ACCESS_TOKEN')
 PHONE_NUMBER_ID = os.environ.get('WHATSAPP_PHONE_NUMBER_ID', '1158332860694177')
 
-# 1. Webhook verify karne ke liye - GET route
 @app.route('/webhook', methods=['GET'])
 def verify_webhook():
     mode = request.args.get('hub.mode')
@@ -27,34 +22,39 @@ def verify_webhook():
     else:
         return 'Verification failed', 403
 
-# 2. Message aane par reply bhejne ke liye - POST route
 @app.route('/webhook', methods=['POST'])
 def webhook():
     data = request.get_json()
     print("Incoming webhook:", json.dumps(data, indent=2))
     
     try:
-        if data.get('entry'):
+        if data and 'entry' in data:
             for entry in data['entry']:
-                for change in entry['changes']:
-                    value = change['value']
-                    if value.get('messages'):
-                        for message in value['messages']:
-                            from_number = message['from']
-                            
-                            if message.get('type') == 'text':
-                                user_text = message['text']['body']
+                if 'changes' in entry:
+                    for change in entry['changes']:
+                        value = change.get('value', {})
+                        
+                        if 'messages' in value and value['messages']:
+                            for message in value['messages']:
+                                from_number = message.get('from')
                                 
-                                reply_text = f"Aapne likha: {user_text}. Mai Bharti Bot hun!"
-                                send_whatsapp_message(from_number, reply_text)
-                                
+                                if message.get('type') == 'text' and 'text' in message:
+                                    user_text = message['text'].get('body', '')
+                                    
+                                    reply_text = f"Aapne likha: {user_text}. Mai Bharti Bot hun!"
+                                    print(f"Sending reply to {from_number}...")
+                                    send_whatsapp_message(from_number, reply_text)
+                                    
     except Exception as e:
         print("Error processing webhook:", e)
     
     return 'OK', 200
 
 def send_whatsapp_message(to, text):
-    # ✅ URL FIX: Phone ID अब सही तरीके से लोड होगा
+    if not ACCESS_TOKEN:
+        print("Error: ACCESS_TOKEN missing in Environment Variables!")
+        return None
+        
     url = f"https://graph.facebook.com/v25.0/{PHONE_NUMBER_ID}/messages" 
     
     headers = {
@@ -78,10 +78,9 @@ def send_whatsapp_message(to, text):
         print("Error sending message:", e)
         return None
 
-# Health check ke liye
 @app.route('/')
 def home():
-    return 'Bharti WhatsApp Bot is Running!'
+    return 'Bharti WhatsApp Bot is Running Perfectly!'
 
 if __name__ == '__main__':
     app.run(debug=True)
