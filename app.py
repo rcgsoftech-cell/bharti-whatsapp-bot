@@ -5,10 +5,14 @@ import json
 
 app = Flask(__name__)
 
-# Render ke Environment Variables se uthayega
-VERIFY_TOKEN = os.environ.get('bharti_bot_123', 'bharti_bot_123')
-ACCESS_TOKEN = os.environ.get('EAALUXJHmDzABRknsh2f20qHt6FbrqNzUE80bbp3QQzsqS7dyO4OZAie29xqta2wryat1dr2VvFIPXqBNw0uJKo7TOcZBtXUQJztjSq0XhxoLmRndTFZCspXx5BOkfJHbKpeH5duLZB0H6OBo1763KknXlr29p56TQXJOqKroXQZBamZBqSEZCnAkQofflQ2YAvHgroCbRnG5N4Yz0fIdy6tV8VWvmEQLYdG3VZAoVIN61F07NJ77ZBnZA0ZAXoTc9Vm0rZAPtcOqglYYZBga6kE7tIsdJqqBwVPkJUTrzdAZDZD')
-PHONE_NUMBER_ID = os.environ.get('1158332860694177')
+# ✅ FIX: Default values को सही तरीके से सेट किया गया है
+VERIFY_TOKEN = os.environ.get('WHATSAPP_VERIFY_TOKEN', 'bharti_bot_123')
+
+# अगर Render पर Env Variable नहीं सेट है, तो यह डिफ़ॉल्ट टोकन यूज़ करेगा
+ACCESS_TOKEN = os.environ.get('WHATSAPP_ACCESS_TOKEN', 'EAALUXJHmDzABRknsh2f20qHt6FbrqNzUE80bbp3QQzsqS7dyO4OZAie29xqta2wryat1dr2VvFIPXqBNw0uJKo7TOcZBtXUQJztjSq0XhxoLmRndTFZCspXx5BOkfJHbKpeH5duLZB0H6OBo1763KknXlr29p56TQXJOqKroXQZBamZBqSEZCnAkQofflQ2YAvHgroCbRnG5N4Yz0fIdy6tV8VWvmEQLYdG3VZAoVIN61F07NJ77ZBnZA0ZAXoTc9Vm0rZAPtcOqglYYZBga6kE7tIsdJqqBwVPkJUTrzdAZDZD')
+
+# ✅ FIX: '1158332860694177' को डिफ़ॉल्ट वैल्यू (Second Argument) बनाया गया है
+PHONE_NUMBER_ID = os.environ.get('WHATSAPP_PHONE_NUMBER_ID', '1158332860694177')
 
 # 1. Webhook verify karne ke liye - GET route
 @app.route('/webhook', methods=['GET'])
@@ -50,7 +54,7 @@ def webhook():
     return 'OK', 200
 
 def send_whatsapp_message(to, text):
-    # ✅ URL FIX: https:// double tha, hata diya
+    # ✅ URL FIX: Phone ID अब सही तरीके से लोड होगा
     url = f"https://graph.facebook.com/v25.0/{PHONE_NUMBER_ID}/messages" 
     
     headers = {
@@ -67,7 +71,8 @@ def send_whatsapp_message(to, text):
     
     try:
         res = requests.post(url, headers=headers, json=payload)
-        print("Sent reply:", res.status_code, res.json())
+        print("Sent reply Status Code:", res.status_code)
+        print("Sent reply Response JSON:", res.json())
         return res.json()
     except Exception as e:
         print("Error sending message:", e)
