@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Render ke Environment Variables se values load hongi
 VERIFY_TOKEN = os.environ.get('WHATSAPP_VERIFY_TOKEN', 'bharti_bot_123')
-ACCESS_TOKEN = os.environ.get('WHATSAPP_ACCESS_TOKEN')
+ACCESS_TOKEN = os.environ.get('EAALUXJHmDzABRgII55bS7RzQ3JHSmNPk3HVkShHX7iKGuQrkc8b4b0d2r8oZBU5lGDv96F465Rhx9Co1tCjmYj2QnHtM8P8tafho4YAHJm2cJyZCIVy45Bet7wrojqoKQRSefpCIydkk4QGn03sE0V2Ai5pjZCcoHWaZChqJTpaXAQkZAiA1nzrPy1SuvgwTs6TZB9Qx0xW3ZCiqmg7eN9NsAFEod8SGn2kT4XinW6I4bIuKXASuZC7FHMqlqQnrJvRwMrJUiQ8vZAzAJGbfrbRWmbTdOiDqZC5BXAuQZDZD')
 PHONE_NUMBER_ID = os.environ.get('WHATSAPP_PHONE_NUMBER_ID', '1158332860694177')
 
 @app.route('/webhook', methods=['GET'])
