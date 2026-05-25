@@ -6,9 +6,9 @@ import json
 app = Flask(__name__)
 
 # Render ke Environment Variables se values load hongi
-VERIFY_TOKEN = os.environ.get('WHATSAPP_VERIFY_TOKEN', 'bharti_bot_123')
-ACCESS_TOKEN = os.environ.get('EAALUXJHmDzABRgTcPSkDpELSOD0ZB5Kfq9JWONClt2JksmJY4t6gZBAKscfLW8pxJmE5jgXXchUCJodZAzWRsfnG1D4oNDhZBng96kof8CJalH3mv4DAxw8ACvSEg6dSZAMhpX00f5SJmZAt5zHKNQSssOFxBy1eVUtiWA8A0cuSoWeol4QE38fZApJN24Wsr1gXFWFF7CZCyhho4flSgv2rjA91wN2aqmu2GgV7FiLrWCnWWcFefIWVsiSmTuj3ERF1XvFS8xSzwHlusKMcRHAhIUHWhxU5ALYT1AZDZD')
-PHONE_NUMBER_ID = os.environ.get('WHATSAPP_PHONE_NUMBER_ID', '1158332860694177')
+VERIFY_TOKEN = os.environ.get('VERIFY_TOKEN', 'bharti_bot_123')
+ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
+PHONE_NUMBER_ID = os.environ.get('PHONE_NUMBER_ID', '1158332860694177')
 
 @app.route('/webhook', methods=['GET'])
 def verify_webhook():
